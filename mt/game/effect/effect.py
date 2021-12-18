@@ -1,7 +1,7 @@
-from abc import ABCMeta, abstractmethod
-from typing import Dict, List, Union, Sequence
-
 import enum
+from abc import ABCMeta, abstractmethod
+from typing import Dict, List, Sequence, Union
+
 from mt.game import Character
 
 
@@ -21,6 +21,7 @@ class EffectType(enum.Enum):
 
 
 class Effect(metaclass=ABCMeta):
+
     def __init__(self, type: Union[EffectType, List[EffectType]]):
         self.type = type
 
@@ -71,6 +72,7 @@ class Effect(metaclass=ABCMeta):
 
 
 class DynamicEffect(Effect):
+
     def __init__(self):
         super().__init__(EffectType.DYNAMIC)
 
@@ -101,6 +103,7 @@ effect_list = {}
 
 
 def register_effect(name: str):
+
     def decorator(effect_cls: type):
         effect_list[name] = effect_cls
         return effect_cls

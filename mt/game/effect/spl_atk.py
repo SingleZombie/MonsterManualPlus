@@ -2,6 +2,7 @@ from .effect import Effect, EffectType, register_effect
 
 
 class SpellAttack(Effect):
+
     def __init__(self, value: int):
         super().__init__(
             [EffectType.PLAYER_SPELL_DEFENCE, EffectType.MONSTER_ATTACK])
@@ -18,6 +19,7 @@ class SpellAttack(Effect):
 
 @register_effect('spl')
 class Spell(Effect):
+
     def __init__(self, turn: int, value: int):
         super().__init__(EffectType.SPECIAL_TURN)
         self.turn = turn

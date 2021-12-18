@@ -1,12 +1,13 @@
 import math
-from typing import List, Dict
+from typing import Dict, List
 
+from .effect import DynamicEffect, Effect, EffectType, dispatch_effects
 from .monster import Monster
 from .player import Player
-from .effect import dispatch_effects, EffectType, Effect, DynamicEffect
 
 
 class Dule:
+
     def __init__(self, monster: Monster, player: Player):
         self.monster = monster
         self.player = player

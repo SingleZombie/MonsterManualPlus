@@ -1,8 +1,10 @@
-from ..effect import Effect
 from typing import List
 
+from ..effect import Effect
 
-class Weapon():
+
+class Equipment():
+
     def __init__(self, effects: List[Effect]):
         self.effects = effects
 
@@ -11,6 +13,7 @@ weapon_list = {}
 
 
 def register_weapon(name: str):
+
     def decorator(weapon_cls: type):
         weapon_list[name] = weapon_cls
         return weapon_cls

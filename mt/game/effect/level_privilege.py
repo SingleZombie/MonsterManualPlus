@@ -1,9 +1,11 @@
+from mt.game import Monster, Player
+
 from .effect import DynamicEffect, EffectType, register_effect
-from mt.game import Player, Monster
 
 
 @register_effect('level_pr')
 class LevelPrevilege(DynamicEffect):
+
     def __init__(self, value: int):
         super().__init__()
         self.value = value

@@ -3,6 +3,7 @@ from .effect import Effect, EffectType, register_effect
 
 @register_effect('spd_down')
 class DecreaseSpeed(Effect):
+
     def __init__(self, value: int):
         super().__init__(EffectType.PLAYER_SPEED)
         self.value = value
@@ -13,6 +14,7 @@ class DecreaseSpeed(Effect):
 
 @register_effect('frost')
 class Frost(Effect):
+
     def __init__(self, value: int):
         super().__init__(EffectType.FROM_FIRST_TURN)
         self.effects = [DecreaseSpeed(value)]

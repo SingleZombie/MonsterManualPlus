@@ -2,6 +2,7 @@ import tkinter as tk
 
 
 class InputFrame(tk.Frame):
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.left_grid = tk.Frame(self)
@@ -9,8 +10,8 @@ class InputFrame(tk.Frame):
         self.attack_entry = tk.Entry(self.left_grid)
         self.defence_descriptor = tk.Label(self.left_grid, text='Defence:')
         self.defence_entry = tk.Entry(self.left_grid)
-        self.equipment_descriptor = tk.Label(self.left_grid,
-                                             text='Equipments:')
+        self.equipment_descriptor = tk.Label(
+            self.left_grid, text='Equipments:')
         self.equipments_entry = tk.Entry(self.left_grid)
         self.right_frame = tk.Frame(self)
         self.enter_button = tk.Button(self.right_frame, text='Enter')

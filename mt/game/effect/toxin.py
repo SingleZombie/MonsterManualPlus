@@ -1,7 +1,9 @@
-from .effect import EffectType, Effect, register_effect
+from .effect import Effect, EffectType, register_effect
 
 
+@register_effect('toxin')
 class Toxin(Effect):
+
     def __init__(self, value: int):
         super().__init__(EffectType.MONSTER_DMG)
 

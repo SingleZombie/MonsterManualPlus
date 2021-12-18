@@ -1,6 +1,7 @@
 import tkinter as tk
-from mt.game import *
-from mt.interface import *
+
+from mt.game import Player
+from mt.interface import DisplayFrame, InputFrame
 
 
 def main():

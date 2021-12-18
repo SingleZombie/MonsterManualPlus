@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter.constants import LEFT
+
+from ..game import Dule, Player
 from ..game.database import monster_dict
-from ..game import Player, Dule
 
 display_monster = [
     'slime', 'will_o_the_wisp', 'ooze', 'slime_warrior', 'red_slime',
@@ -10,6 +11,7 @@ display_monster = [
 
 
 class DisplayFrame(tk.Frame):
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -23,23 +25,23 @@ class DisplayFrame(tk.Frame):
 
         self.display_area = tk.Canvas(self, height=2000, width=2000)
         self.vscrollbar = tk.Scrollbar(self, command=self.display_area.yview)
-        self.hscrollbar = tk.Scrollbar(self,
-                                       orient='horizontal',
-                                       command=self.display_area.xview)
-        self.display_area.configure(yscrollcommand=self.vscrollbar.set,
-                                    xscrollcommand=self.hscrollbar.set)
+        self.hscrollbar = tk.Scrollbar(
+            self, orient='horizontal', command=self.display_area.xview)
+        self.display_area.configure(
+            yscrollcommand=self.vscrollbar.set,
+            xscrollcommand=self.hscrollbar.set)
 
         self.sub_frame = tk.Frame(self.display_area)
-        id = self.display_area.create_window((0, 0),
-                                             width=2000,
-                                             window=self.sub_frame,
-                                             anchor='nw')
+        self.display_area.create_window((0, 0),
+                                        width=2000,
+                                        window=self.sub_frame,
+                                        anchor='nw')
 
         def _configure_interior(event):
             # update the scrollbars to match the size of the inner frame
             size = (self.sub_frame.winfo_reqwidth(),
                     self.sub_frame.winfo_reqheight())
-            self.display_area.config(scrollregion="0 0 %s %s" % size)
+            self.display_area.config(scrollregion='0 0 %s %s' % size)
             if self.sub_frame.winfo_reqwidth() != \
                     self.display_area.winfo_width():
                 # update the canvas's width to fit the inner frame
@@ -94,6 +96,6 @@ class DisplayFrame(tk.Frame):
             ]
 
             for j, text in enumerate(texts):
-                tk.Label(self.sub_frame, text=text).grid(row=i,
-                                                         column=j,
-                                                         padx=5)
+                tk.Label(
+                    self.sub_frame, text=text).grid(
+                        row=i, column=j, padx=5)
