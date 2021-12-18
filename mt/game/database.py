@@ -17,3 +17,12 @@ monster_dict: Dict[str, Monster] = dict(
         185,
     ),
     big_bat=Monster(268, 45, 27, 150, [], 9, 24))
+
+display_monster = [
+    'slime', 'will_o_the_wisp', 'ooze', 'slime_warrior', 'red_slime',
+    'red_slime_warrior'
+]
+
+default_equipments = [
+    'cloth', 'knight_bracer', 'skeleton_shield', 'sword', 'speed_fist'
+]

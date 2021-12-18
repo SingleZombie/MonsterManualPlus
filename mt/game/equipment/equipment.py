@@ -9,17 +9,17 @@ class Equipment():
         self.effects = effects
 
 
-weapon_list = {}
+equipment_list = {}
 
 
-def register_weapon(name: str):
+def register_equipment(name: str):
 
-    def decorator(weapon_cls: type):
-        weapon_list[name] = weapon_cls
-        return weapon_cls
+    def decorator(equipment_cls: type):
+        equipment_list[name] = equipment_cls
+        return equipment_cls
 
     return decorator
 
 
-def build_weapon(name, *args, **kwargs):
-    return weapon_list[name](*args, **kwargs)
+def build_equipment(name):
+    return equipment_list[name]()

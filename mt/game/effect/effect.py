@@ -15,12 +15,19 @@ class EffectType(enum.Enum):
     MONSTER_ATTACK = enum.auto()
     MONSTER_DEFENCE = enum.auto()
     MONSTER_SPEED = enum.auto()
+    MONSTER_PHYSICAL_DMG = enum.auto()
     MONSTER_DMG = enum.auto()
     SPECIAL_TURN = enum.auto()
     FROM_FIRST_TURN = enum.auto()
 
 
-class Effect(metaclass=ABCMeta):
+def update_state_mult(state: Dict[str, float], multiplier: float):
+    v = state.get('mult', 1)
+    v *= multiplier
+    state['mult'] = v
+
+
+class Effect():
 
     def __init__(self, type: Union[EffectType, List[EffectType]]):
         self.type = type
@@ -67,23 +74,71 @@ class Effect(metaclass=ABCMeta):
     def on_get_monster_speed(self, speed, states={}) -> int:
         return self.mod_value(states, speed)
 
+    def on_get_monster_physical_damage(self,
+                                       physical_damage,
+                                       states={}) -> float:
+        return self.mod_value(states, physical_damage)
+
     def on_get_monster_damage(self, damage, states={}) -> float:
         return self.mod_value(states, damage)
 
 
-class DynamicEffect(Effect):
+class DynamicEffect(Effect, metaclass=ABCMeta):
 
     def __init__(self):
         super().__init__(EffectType.DYNAMIC)
 
     @abstractmethod
-    def get_extra_param(self, player: Character, monster: Character):
+    def to_static_effects(self, player: Character,
+                          monster: Character) -> List[Effect]:
         pass
 
 
-def dispatch_effects(
-        effects: Sequence[Effect]) -> Dict[EffectType, List[Effect]]:
-    res = dict()
+class DynamicEffectWithTest(DynamicEffect):
+
+    def __init__(self):
+        super().__init__(EffectType.DYNAMIC)
+
+    @abstractmethod
+    def to_test_static_effects(self) -> Dict[str, List[Effect]]:
+        pass
+
+
+class VaringEffect(Effect, metaclass=ABCMeta):
+
+    def __init__(self):
+        super().__init__(EffectType.DYNAMIC)
+
+    @abstractmethod
+    def to_static_effects(self, extra_inputs: Dict) -> List[Effect]:
+        pass
+
+    @abstractmethod
+    def to_test_static_effects(self) -> Dict[str, List[Effect]]:
+        pass
+
+
+class RaceEffect(DynamicEffect):
+
+    def __init__(self, effects: List[Effect], race):
+        super().__init__()
+        self.effects = effects
+        self.race = race
+
+    def to_static_effects(self, player: Character,
+                          monster: Character) -> List[Effect]:
+        if monster.race == self.race:
+            return self.effects
+        else:
+            return []
+
+
+def dispatch_effects(effects: Sequence[Effect],
+                     output=None) -> Dict[EffectType, List[Effect]]:
+    if output is None:
+        res = dict()
+    else:
+        res = output
 
     for effect in effects:
         if not isinstance(effect.type, list):
@@ -113,3 +168,10 @@ def register_effect(name: str):
 
 def build_effect(name, *args, **kwargs):
     return effect_list[name](*args, **kwargs)
+
+
+extra_inputs = set()
+
+
+def require_extra_input(name: str):
+    extra_inputs.add(name)

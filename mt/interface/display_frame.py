@@ -1,13 +1,9 @@
 import tkinter as tk
 from tkinter.constants import LEFT
+from typing import Dict
 
 from ..game import Dule, Player
-from ..game.database import monster_dict
-
-display_monster = [
-    'slime', 'will_o_the_wisp', 'ooze', 'slime_warrior', 'red_slime',
-    'red_slime_warrior'
-]
+from ..game.database import display_monster, monster_dict
 
 
 class DisplayFrame(tk.Frame):
@@ -66,7 +62,7 @@ class DisplayFrame(tk.Frame):
         self.vscrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         self.display_area.pack(side=tk.LEFT, fill=tk.X)
 
-    def update_content(self, player: Player):
+    def update_content(self, player: Player, extra_input: Dict):
         for child in self.sub_frame.winfo_children():
             child.destroy()
 

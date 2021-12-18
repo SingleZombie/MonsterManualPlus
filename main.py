@@ -1,6 +1,5 @@
 import tkinter as tk
 
-from mt.game import Player
 from mt.interface import DisplayFrame, InputFrame
 
 
@@ -12,10 +11,9 @@ def main():
     display_frame = DisplayFrame(root)
 
     def cal_input(event):
-        p = Player(1000, int(input_frame.attack_entry.get()),
-                   int(input_frame.defence_entry.get()), 100, [], None, 1,
-                   1000)
-        display_frame.update_content(p)
+        p = input_frame.get_player()
+        e_i = input_frame.get_extra_inputs()
+        display_frame.update_content(p, e_i)
 
     input_frame.show_children()
     input_frame.add_enter_event(cal_input)
