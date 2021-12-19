@@ -5,9 +5,9 @@ from .effect import Effect, EffectType, register_effect
 class LifeRegenerate(Effect):
 
     def __init__(self, value: int):
-        super().__init__(EffectType.MONSTER_DMG)
+        super().__init__(EffectType.PLAYER_REGENERATE)
         self.value = value
 
-    def on_get_monster_damage(self, damage, states={}) -> float:
-        damage -= self.value
-        return super().on_get_monster_damage(damage, states=states)
+    def on_get_player_regenerate(self, regenerate, states={}) -> float:
+        regenerate += self.value
+        return super().on_get_player_regenerate(regenerate, states=states)

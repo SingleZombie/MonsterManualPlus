@@ -7,11 +7,14 @@ from mt.game import Character
 
 class EffectType(enum.Enum):
     DYNAMIC = enum.auto()
+    VARING = enum.auto()
     PLAYER_ATTACK = enum.auto()
     PLAYER_DEFENCE = enum.auto()
     PLAYER_SPELL_DEFENCE = enum.auto()
     PLAYER_SPEED = enum.auto()
     PLAYER_DAMAGE = enum.auto()
+    PLAYER_REGENERATE = enum.auto()
+    MONSTER_LIFE = enum.auto()
     MONSTER_ATTACK = enum.auto()
     MONSTER_DEFENCE = enum.auto()
     MONSTER_SPEED = enum.auto()
@@ -25,6 +28,12 @@ def update_state_mult(state: Dict[str, float], multiplier: float):
     v = state.get('mult', 1)
     v *= multiplier
     state['mult'] = v
+
+
+def update_state_mult_mod(state: Dict[str, float], multiplier: float):
+    v = state.get('mult_mod', 0)
+    v += multiplier
+    state['mult_mod'] = v
 
 
 class Effect():
@@ -41,10 +50,10 @@ class Effect():
 
     @staticmethod
     def postprocess_value(states: dict, value):
-        if states.get('mult', False):
-            mult = states['mult']
-            return value * mult
-        return value
+        mult = states.get('mult', 1)
+        mult_mod = states.get('mult_mod', 0)
+        mult += mult_mod
+        return value * mult
 
     def on_get_player_attack(self, attack, states={}) -> int:
         return self.mod_value(states, attack)
@@ -64,6 +73,12 @@ class Effect():
             damage = damage * evasion / 100.0
             states.pop('evasion')
         return self.mod_value(states, damage)
+
+    def on_get_player_regenerate(self, regenerate, states: dict = {}) -> float:
+        return self.mod_value(states, regenerate)
+
+    def on_get_monster_life(self, life, states={}) -> int:
+        return self.mod_value(states, life)
 
     def on_get_monster_attack(self, attack, states={}) -> int:
         return self.mod_value(states, attack)
@@ -97,7 +112,7 @@ class DynamicEffect(Effect, metaclass=ABCMeta):
 class DynamicEffectWithTest(DynamicEffect):
 
     def __init__(self):
-        super().__init__(EffectType.DYNAMIC)
+        super().__init__()
 
     @abstractmethod
     def to_test_static_effects(self) -> Dict[str, List[Effect]]:
@@ -107,7 +122,7 @@ class DynamicEffectWithTest(DynamicEffect):
 class VaringEffect(Effect, metaclass=ABCMeta):
 
     def __init__(self):
-        super().__init__(EffectType.DYNAMIC)
+        super().__init__(EffectType.VARING)
 
     @abstractmethod
     def to_static_effects(self, extra_inputs: Dict) -> List[Effect]:

@@ -21,11 +21,14 @@ class BloodHunter(DynamicEffectWithTest):
 
     def to_static_effects(self, player, monster) -> List[Effect]:
         if player.life < player.life_max:
-            multiplier = ((player.life_max - player.life) / player.life_max +
-                          1)
+            multiplier = (player.life_max -
+                          player.life) / player.life_max * 100
+            res = []
             for effect in self.effects:
-                effect.mult(multiplier)
-            return self.effects
+                new_effect = copy(effect)
+                new_effect.mult(multiplier)
+                res.append(new_effect)
+            return res
         else:
             return []
 
@@ -33,6 +36,5 @@ class BloodHunter(DynamicEffectWithTest):
         res = {}
         for i in range(10):
             percentage = (i + 1) * 10
-            multiplier = percentage / 100 + 1
-            new_list = [copy(x).mult(multiplier) for x in self.effects]
+            new_list = [copy(x).mult(percentage) for x in self.effects]
             res[f'{percentage}%:'] = new_list

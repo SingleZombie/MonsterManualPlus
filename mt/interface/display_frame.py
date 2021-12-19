@@ -70,13 +70,15 @@ class DisplayFrame(tk.Frame):
             monster = monster_dict[monster_name]
 
             dule = Dule(monster, player)
-            dmg, turn, equip_id = dule.cal_opt_res()
-            dmg_atk_1, _, _ = dule.cal_opt_res(1, 0)
-            dmg_atk_2, _, _ = dule.cal_opt_res(2, 0)
-            dmg_def_1, _, _ = dule.cal_opt_res(0, 1)
-            dmg_def_2, _, _ = dule.cal_opt_res(0, 2)
-            dmg_atk_def_1, _, _ = dule.cal_opt_res(1, 1)
-            dmg_atk_def_2, _, _ = dule.cal_opt_res(2, 2)
+            dmg, turn, equip_id = dule.cal_opt_res(extra_inputs=extra_input)
+            dmg_atk_1, _, _ = dule.cal_opt_res(1, 0, extra_inputs=extra_input)
+            dmg_atk_2, _, _ = dule.cal_opt_res(2, 0, extra_inputs=extra_input)
+            dmg_def_1, _, _ = dule.cal_opt_res(0, 1, extra_inputs=extra_input)
+            dmg_def_2, _, _ = dule.cal_opt_res(0, 2, extra_inputs=extra_input)
+            dmg_atk_def_1, _, _ = dule.cal_opt_res(
+                1, 1, extra_inputs=extra_input)
+            dmg_atk_def_2, _, _ = dule.cal_opt_res(
+                2, 2, extra_inputs=extra_input)
 
             texts = [
                 monster_name,

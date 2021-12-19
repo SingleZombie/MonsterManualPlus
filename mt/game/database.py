@@ -1,6 +1,6 @@
 from typing import Dict
 
-from .effect import build_effect
+from .effect import build_effect, extra_inputs
 from .monster import Monster, MonsterRace
 
 monster_dict: Dict[str, Monster] = dict(
@@ -17,15 +17,35 @@ monster_dict: Dict[str, Monster] = dict(
     slime_warrior=Monster(42, 5, 1, 90, [], 1, 2),
     red_slime=Monster(58, 7, 1, 80, [], 1, 3),
     red_slime_warrior=Monster(80, 11, 3, 90, [], 2, 4),
-    # dead=Monster(
-    #     life=45,
-    #     attack=15,
-    #     defence=0,
-    #     speed=100,
-    #     gold=1,
-    #     experience=3,
-    #     level=1,
-    #     effects=[build_effect('monster_group_pro', MonsterRace.SKELETON)]),
+    dead=Monster(
+        life=45,
+        attack=15,
+        defence=0,
+        speed=100,
+        gold=1,
+        experience=3,
+        level=1,
+        effects=[
+            build_effect(
+                'monster_group_pro', MonsterRace.SKELETON, life_mult_mod=10)
+        ],
+        race=MonsterRace.SKELETON),
+    blood_dead=Monster(
+        life=75,
+        attack=18,
+        defence=1,
+        speed=100,
+        gold=3,
+        experience=5,
+        level=2,
+        effects=[
+            build_effect(
+                'monster_group_pro', MonsterRace.SKELETON, life_mult_mod=15),
+            build_effect(
+                'blood_hunter',
+                monster_property=build_effect('monster_pro', speed_mod=2))
+        ],
+        race=MonsterRace.SKELETON),
     ice_ooze=Monster(
         life=300,
         attack=2,
@@ -63,13 +83,32 @@ monster_dict: Dict[str, Monster] = dict(
         experience=5,
         level=3,
         effects=[build_effect('level_pr', 25)]),
+    black_slime=Monster(
+        life=157,
+        attack=19,
+        defence=8,
+        speed=80,
+        gold=4,
+        experience=7,
+        level=3,
+        effects=[build_effect('level_pr', 25)]),
+    swordman=Monster(
+        life=135,
+        attack=22,
+        defence=6,
+        speed=240,
+        gold=4,
+        experience=8,
+        level=3,
+        effects=[]),
 )
 
 # big_bat=Monster(268, 45, 27, 150, [], 9, 24))
 
 # display_monster = [
 #     'slime', 'will_o_the_wisp', 'ooze', 'slime_warrior', 'red_slime',
-#     'red_slime_warrior', 'ice_ooze', 'rogue_mage', 'slime_man', 'slime_noble'
+#     'red_slime_warrior', 'dead', 'blood_dead', 'ice_ooze', 'rogue_mage',
+#     'slime_man', 'slime_noble', 'black_slime'
 # ]
 
-display_monster = ['ice_ooze']
+display_monster = ['dead']

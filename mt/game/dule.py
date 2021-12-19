@@ -1,9 +1,13 @@
 import math
 from typing import Dict, List, Tuple
+from copy import deepcopy
+
+from mt.game.effect.effect import VaringEffect
 
 from .effect import DynamicEffect, Effect, EffectType, dispatch_effects
 from .monster import Monster
 from .player import Player
+import mt.game.utils.math_util as math_util
 
 
 def merge_dict(a: Dict, b: Dict):
@@ -50,6 +54,13 @@ class Dule:
                 spell_defence, state)
         return Effect.postprocess_value(state, spell_defence)
 
+    def get_monster_life(self):
+        life = self.monster.life
+        state = {}
+        for effect in self.effect_dict.get(EffectType.MONSTER_LIFE, []):
+            life = effect.on_get_monster_life(life, state)
+        return Effect.postprocess_value(state, life)
+
     def get_monster_defence(self):
         defence = self.monster.defence
         state = {}
@@ -77,6 +88,9 @@ class Dule:
                                            []):
             physical_damage = effect.on_get_monster_physical_damage(
                 physical_damage, state)
+        armor = state.get('armor', 0)
+        multiplier = 1 / (armor * 0.06 + 1)
+        physical_damage *= multiplier
         return Effect.postprocess_value(state, physical_damage)
 
     def get_player_damage(self):
@@ -94,17 +108,24 @@ class Dule:
 
         return Effect.postprocess_value(state, damage)
 
+    def get_player_regenerate(self):
+        regenerate = 0
+        state = {}
+        for effect in self.effect_dict.get(EffectType.PLAYER_REGENERATE, []):
+            regenerate = effect.on_get_player_regenerate(regenerate, state)
+        return Effect.postprocess_value(state, regenerate)
+
     def get_monster_damage(self):
         monster_attack = self.get_monster_attack()
         player_defence = self.get_player_defence()
         monster_speed = self.get_monster_speed()
+        multiplier = math.sqrt(monster_speed / 100)
 
-        physical_damage = max(monster_attack - player_defence, 0)
+        physical_damage = max(monster_attack - player_defence, 0) * multiplier
         physical_damage = self.get_monster_physical_damage(physical_damage)
 
-        damage = physical_damage - self.get_player_spell_defence()
-        multiplier = math.sqrt(monster_speed / 100)
-        damage = max(damage * multiplier, 0)
+        spell_damage = max(-self.get_player_spell_defence(), 0)
+        damage = physical_damage + spell_damage
 
         state = {}
         for effect in self.effect_dict.get(EffectType.MONSTER_DMG, []):
@@ -121,9 +142,19 @@ class Dule:
         if EffectType.DYNAMIC in effect_dict:
             effect_dict.pop(EffectType.DYNAMIC)
 
-    def cal_res(self, crt_effects) -> Tuple[int, int]:
+    def update_varing_effects(self, effect_dict: Dict, extra_inputs: Dict):
+        varing_effects: List[VaringEffect] = \
+            effect_dict.get(EffectType.VARING, [])
+        for effect in varing_effects:
+            effects = effect.to_static_effects(extra_inputs)
+            dispatch_effects(effects, effect_dict)
+        if EffectType.VARING in effect_dict:
+            effect_dict.pop(EffectType.VARING)
+
+    def cal_res(self, crt_effects, extra_inputs={}) -> Tuple[int, int]:
         self.effect_dict = dispatch_effects(crt_effects)
         self.update_dynamic_effects(self.effect_dict)
+        self.update_varing_effects(self.effect_dict, extra_inputs)
 
         from_first_turn = self.effect_dict.get(EffectType.FROM_FIRST_TURN,
                                                None)
@@ -131,9 +162,12 @@ class Dule:
 
         crt_dmg = 0
         crt_turn = 0
+        monster_life = self.get_monster_life()
         if from_first_turn:
-            life = self.monster.life
+            life = monster_life
             life -= self.get_player_damage()
+            regenerate = self.get_player_regenerate()
+            crt_dmg -= regenerate
             crt_turn = 1
             if life > 0:
                 crt_dmg += self.get_monster_damage()
@@ -144,11 +178,13 @@ class Dule:
                 if self.get_player_damage() <= 0:
                     return 9999999999, 0
                 turn = math.ceil(life / self.get_player_damage()) - 1
+                regenerate = self.get_player_regenerate()
                 crt_dmg += self.get_monster_damage() * turn
+                crt_dmg -= self.get_player_regenerate() * (turn + 1)
                 crt_turn += turn + 1
         elif special_turn:
-            original_effect_dict = self.effect_dict.copy()
-            life = self.monster.life
+            original_effect_dict = deepcopy(self.effect_dict)
+            life = monster_life
 
             # only support one special turn now
             effect = special_turn[0]
@@ -160,23 +196,29 @@ class Dule:
                 return 9999999999, 0
             turn = math.ceil(life / player_dmg) - 1
             if turn > effect.turn:
+
                 crt_dmg += self.get_monster_damage() * effect.turn
+                crt_dmg -= self.get_player_regenerate() * (effect.turn + 1)
                 life -= player_dmg * effect.turn
                 self.effect_dict = original_effect_dict
                 turn = math.ceil(life / self.get_player_damage()) - 1
                 crt_dmg += self.get_monster_damage() * turn
+                crt_dmg -= self.get_player_regenerate() * turn
                 crt_turn = effect.turn + turn + 1
             else:
                 crt_dmg += self.get_monster_damage() * turn
+                crt_dmg -= self.get_player_regenerate() * (turn + 1)
                 crt_turn = turn + 1
 
         else:
+            life = monster_life
             if self.get_player_damage() <= 0:
                 return 9999999999, 0
-            turn = math.ceil(self.monster.life / self.get_player_damage()) - 1
+            turn = math.ceil(life / self.get_player_damage()) - 1
             crt_dmg = self.get_monster_damage() * turn
+            crt_dmg -= self.get_player_regenerate() * (turn + 1)
             crt_turn = turn + 1
-        crt_dmg = math.floor(crt_dmg)
+        crt_dmg = math_util.floor(crt_dmg)
         return crt_dmg, crt_turn
 
     def cal_all_res(self, test_effect: type) -> Dict[str, Tuple[int, int]]:
@@ -210,7 +252,8 @@ class Dule:
 
     def cal_opt_res(self,
                     player_atk_mod=0,
-                    player_def_mod=0) -> Tuple[int, int, int]:
+                    player_def_mod=0,
+                    extra_inputs: Dict = {}) -> Tuple[int, int, int]:
         self.player._attack += player_atk_mod
         self.player._defence += player_def_mod
         combs = self.player.get_equipment_comb()
@@ -221,7 +264,7 @@ class Dule:
             crt_effects = equip_comb.copy()
             crt_effects.extend(self.monster.effects)
 
-            crt_dmg, crt_turn = self.cal_res(crt_effects)
+            crt_dmg, crt_turn = self.cal_res(crt_effects, extra_inputs)
 
             if crt_dmg < opt_dmg:
                 opt_dmg = crt_dmg

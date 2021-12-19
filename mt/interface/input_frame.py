@@ -5,11 +5,12 @@ from mt.game.effect import extra_inputs
 from mt.game.equipment import build_equipment
 
 player_inputs = ['Attack', 'Defence', 'HP', 'MAX HP', 'Level']
-default_states = ['4', '4', '260', '350', '2']
+default_states = ['5', '4', '175', '350', '2']
 default_equipments = [
     'cloth', 'sword', 'knight_bracer', 'skeleton_shield', 'speed_fist'
 ]
-default_equi_comb = '[(1, 2)]'
+# default_equi_comb = '[(1, 2), (1, 1), (0, 2), (3, 3)]'
+default_equi_comb = '[(3, 3)]'
 
 
 class InputFrame(tk.Frame):
