@@ -62,7 +62,7 @@ class Effect():
         if states.get('evasion', None):
             evasion = states['evasion']
             damage = damage * evasion / 100.0
-            states.popitem('evasion')
+            states.pop('evasion')
         return self.mod_value(states, damage)
 
     def on_get_monster_attack(self, attack, states={}) -> int:
@@ -144,12 +144,12 @@ def dispatch_effects(effects: Sequence[Effect],
         if not isinstance(effect.type, list):
             effect_type_list = [effect.type]
         else:
-            effect_type_list = effect
+            effect_type_list = effect.type
 
         for type in effect_type_list:
             if type not in res:
-                res[effect.type] = []
-            res[effect.type].append(effect)
+                res[type] = []
+            res[type].append(effect)
 
     return res
 

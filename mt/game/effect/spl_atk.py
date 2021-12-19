@@ -16,9 +16,8 @@ class SpellAttack(Effect):
 @register_effect('stop_phy_dmg')
 class StopPhysicalDamage(Effect):
 
-    def __init__(self, value: int):
+    def __init__(self):
         super().__init__(EffectType.MONSTER_PHYSICAL_DMG)
-        self.value = value
 
     def on_get_monster_physical_damage(self, damage, states={}) -> int:
         states['zero'] = True

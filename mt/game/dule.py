@@ -6,6 +6,14 @@ from .monster import Monster
 from .player import Player
 
 
+def merge_dict(a: Dict, b: Dict):
+    for k, v in b.items():
+        if k in a:
+            a[k].extend(v)
+        else:
+            a[k] = v
+
+
 class Dule:
 
     def __init__(self, monster: Monster, player: Player):
@@ -53,14 +61,14 @@ class Dule:
         speed = self.player.speed
         state = {}
         for effect in self.effect_dict.get(EffectType.PLAYER_SPEED, []):
-            speed = effect.on_get_player_defence(speed, state)
+            speed = effect.on_get_player_speed(speed, state)
         return Effect.postprocess_value(state, speed)
 
     def get_monster_speed(self):
         speed = self.monster.speed
         state = {}
         for effect in self.effect_dict.get(EffectType.MONSTER_SPEED, []):
-            speed = effect.on_get_monster_defence(speed, state)
+            speed = effect.on_get_monster_speed(speed, state)
         return Effect.postprocess_value(state, speed)
 
     def get_monster_physical_damage(self, physical_damage):
@@ -80,10 +88,11 @@ class Dule:
         multiplier = math.sqrt(player_speed / 100)
         damage = max(damage * multiplier, 0)
 
+        state = {}
         for effect in self.effect_dict.get(EffectType.PLAYER_DAMAGE, []):
-            damage = effect.on_get_player_damage(damage)
+            damage = effect.on_get_player_damage(damage, state)
 
-        return Effect.postprocess_value(damage)
+        return Effect.postprocess_value(state, damage)
 
     def get_monster_damage(self):
         monster_attack = self.get_monster_attack()
@@ -97,9 +106,11 @@ class Dule:
         multiplier = math.sqrt(monster_speed / 100)
         damage = max(damage * multiplier, 0)
 
+        state = {}
         for effect in self.effect_dict.get(EffectType.MONSTER_DMG, []):
-            damage = effect.on_get_monster_damage(damage)
-        return Effect.postprocess_value(damage)
+            damage = effect.on_get_monster_damage(damage, state)
+
+        return Effect.postprocess_value(state, damage)
 
     def update_dynamic_effects(self, effect_dict: Dict):
         dynamic_effects: List[DynamicEffect] = \
@@ -107,7 +118,8 @@ class Dule:
         for effect in dynamic_effects:
             effects = effect.to_static_effects(self.player, self.monster)
             dispatch_effects(effects, effect_dict)
-        effect_dict.popitem(EffectType.DYNAMIC)
+        if EffectType.DYNAMIC in effect_dict:
+            effect_dict.pop(EffectType.DYNAMIC)
 
     def cal_res(self, crt_effects) -> Tuple[int, int]:
         self.effect_dict = dispatch_effects(crt_effects)
@@ -128,9 +140,9 @@ class Dule:
                 for new_effect in from_first_turn:
                     new_dict = dispatch_effects(new_effect.effects)
                     self.update_dynamic_effects(new_dict)
-                    self.effect_dict.update(new_dict)
+                    merge_dict(self.effect_dict, new_dict)
                 if self.get_player_damage() <= 0:
-                    return 9999999999, 0, 0
+                    return 9999999999, 0
                 turn = math.ceil(life / self.get_player_damage()) - 1
                 crt_dmg += self.get_monster_damage() * turn
                 crt_turn += turn + 1
@@ -142,8 +154,10 @@ class Dule:
             effect = special_turn[0]
             new_dict = dispatch_effects(effect.effects)
             self.update_dynamic_effects(new_dict)
-            self.effect_dict.update(new_dict)
+            merge_dict(self.effect_dict, new_dict)
             player_dmg = self.get_player_damage()
+            if player_dmg <= 0:
+                return 9999999999, 0
             turn = math.ceil(life / player_dmg) - 1
             if turn > effect.turn:
                 crt_dmg += self.get_monster_damage() * effect.turn
@@ -158,7 +172,7 @@ class Dule:
 
         else:
             if self.get_player_damage() <= 0:
-                return 9999999999, 0, 0
+                return 9999999999, 0
             turn = math.ceil(self.monster.life / self.get_player_damage()) - 1
             crt_dmg = self.get_monster_damage() * turn
             crt_turn = turn + 1

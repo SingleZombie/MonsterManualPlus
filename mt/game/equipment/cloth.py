@@ -6,4 +6,4 @@ from .equipment import Equipment, register_equipment
 class Cloth(Equipment):
 
     def __init__(self):
-        super().__init__([build_effect('player_pro', defence_mod=2)])
+        super().__init__([build_effect('player_pro', defence_mod=1)])

@@ -1,4 +1,4 @@
-from mt.game import MonsterRace
+from mt.game.monster import MonsterRace
 
 from ..effect import PlayerProperty, RaceEffect, build_effect
 from .equipment import Equipment, register_equipment

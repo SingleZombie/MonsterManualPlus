@@ -8,13 +8,15 @@ from .effect import (Effect, EffectType, VaringEffect, register_effect,
 @register_effect('monster_pro')
 class MonsterProperty(Effect):
 
-    def __init__(self,
-                 attack_mod=0,
-                 defence_mod=0,
-                 speed_mod=0,
-                 attack_mult=1,
-                 defence_mult=1,
-                 speed_mult=1):
+    def __init__(
+            self,
+            #life_mult_mod=0,
+            attack_mod=0,
+            defence_mod=0,
+            speed_mod=0,
+            attack_mult=1,
+            defence_mult=1,
+            speed_mult=1):
         type_list = []
         if attack_mod != 0 or attack_mult != 1:
             type_list.append(EffectType.MONSTER_ATTACK)
@@ -54,14 +56,16 @@ class MonsterProperty(Effect):
 @register_effect('monster_group_pro')
 class MonsterGroupProperty(VaringEffect):
 
-    def __init__(self,
-                 race,
-                 attack_mod=0,
-                 defence_mod=0,
-                 speed_mod=0,
-                 attack_mult=1,
-                 defence_mult=1,
-                 speed_mult=1):
+    def __init__(
+            self,
+            race,
+            # life_mult_mod=0,
+            attack_mod=0,
+            defence_mod=0,
+            speed_mod=0,
+            attack_mult=1,
+            defence_mult=1,
+            speed_mult=1):
         super().__init__()
         self.effect = MonsterProperty(attack_mod, defence_mod, speed_mod,
                                       attack_mult, defence_mult, speed_mult)

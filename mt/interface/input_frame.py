@@ -1,11 +1,15 @@
 import tkinter as tk
 
 from mt.game import Player
-from mt.game.database import default_equipments
 from mt.game.effect import extra_inputs
 from mt.game.equipment import build_equipment
 
 player_inputs = ['Attack', 'Defence', 'HP', 'MAX HP', 'Level']
+default_states = ['4', '4', '260', '350', '2']
+default_equipments = [
+    'cloth', 'sword', 'knight_bracer', 'skeleton_shield', 'speed_fist'
+]
+default_equi_comb = '[(1, 2)]'
 
 
 class InputFrame(tk.Frame):
@@ -15,10 +19,11 @@ class InputFrame(tk.Frame):
         self.left_grid = tk.Frame(self)
 
         self.player_items = []
-        for name in player_inputs:
+        for i, name in enumerate(player_inputs):
             descriptor = tk.Label(self.left_grid, text=f'{name}:')
             entry = tk.Entry(self.left_grid)
             self.player_items.append((descriptor, entry))
+            entry.insert(0, default_states[i])
 
         self.extra_input_items = []
         for name in extra_inputs:
@@ -28,11 +33,12 @@ class InputFrame(tk.Frame):
 
         self.equipment_descriptor = tk.Label(
             self.left_grid, text='Equipments:')
-        self.equipments_entry = tk.Entry(self.left_grid)
+        self.equipments_entry = tk.Entry(self.left_grid, width=40)
         self.equipment_comb_descriptor = tk.Label(
             self.left_grid, text='Equipment Combination:')
-        self.equipments_comb_entry = tk.Entry(
-            self.left_grid, text=','.join(default_equipments))
+        self.equipments_comb_entry = tk.Entry(self.left_grid, width=40)
+        self.equipments_entry.insert(0, ','.join(default_equipments))
+        self.equipments_comb_entry.insert(0, default_equi_comb)
 
         self.right_frame = tk.Frame(self)
         self.enter_button = tk.Button(self.right_frame, text='Enter')
@@ -67,12 +73,12 @@ class InputFrame(tk.Frame):
         for i, v in enumerate(self.player_items):
             descpritor, entry = v
             descpritor.grid(row=i, column=0, padx=10, pady=5)
-            entry.grid(row=0, column=1, padx=10, pady=5)
+            entry.grid(row=i, column=1, padx=10, pady=5)
 
         for i, v in enumerate(self.extra_input_items):
             descpritor, entry = v
             descpritor.grid(row=i, column=2, padx=10, pady=5)
-            entry.grid(row=0, column=3, padx=10, pady=5)
+            entry.grid(row=i, column=3, padx=10, pady=5)
 
         self.equipment_descriptor.grid(row=0, column=4, padx=10, pady=5)
         self.equipments_entry.grid(row=0, column=5, padx=10, pady=5)
