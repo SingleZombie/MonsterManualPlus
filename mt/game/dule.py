@@ -1,13 +1,13 @@
 import math
-from typing import Dict, List, Tuple
 from copy import deepcopy
+from typing import Dict, List, Tuple
 
+import mt.game.utils.math_util as math_util
 from mt.game.effect.effect import VaringEffect
 
 from .effect import DynamicEffect, Effect, EffectType, dispatch_effects
 from .monster import Monster
 from .player import Player
-import mt.game.utils.math_util as math_util
 
 
 def merge_dict(a: Dict, b: Dict):
@@ -82,9 +82,20 @@ class Dule:
             speed = effect.on_get_monster_speed(speed, state)
         return Effect.postprocess_value(state, speed)
 
+    def get_player_physical_damage(self, physical_damage):
+        state = {}
+        for effect in self.effect_dict.get(EffectType.PLAYER_PHYSICAL_DAMAGE,
+                                           []):
+            physical_damage = effect.on_get_player_physical_damage(
+                physical_damage, state)
+        armor = state.get('armor', 0)
+        multiplier = 1 / (armor * 0.06 + 1)
+        physical_damage *= multiplier
+        return Effect.postprocess_value(state, physical_damage)
+
     def get_monster_physical_damage(self, physical_damage):
         state = {}
-        for effect in self.effect_dict.get(EffectType.MONSTER_PHYSICAL_DMG,
+        for effect in self.effect_dict.get(EffectType.MONSTER_PHYSICAL_DAMAGE,
                                            []):
             physical_damage = effect.on_get_monster_physical_damage(
                 physical_damage, state)
@@ -97,10 +108,16 @@ class Dule:
         player_attack = self.get_player_attack()
         monster_defence = self.get_monster_defence()
         player_speed = self.get_player_speed()
-
-        damage = max(player_attack - monster_defence, 0)
+        if player_speed <= 0:
+            return 0
         multiplier = math.sqrt(player_speed / 100)
-        damage = max(damage * multiplier, 0)
+
+        physical_damage = max(player_attack - monster_defence, 0) * multiplier
+        physical_damage = self.get_player_physical_damage(physical_damage)
+
+        # spell_damage = max(-self.get_player_spell_defence(), 0)
+        # damage = physical_damage + spell_damage
+        damage = physical_damage
 
         state = {}
         for effect in self.effect_dict.get(EffectType.PLAYER_DAMAGE, []):
@@ -128,7 +145,7 @@ class Dule:
         damage = physical_damage + spell_damage
 
         state = {}
-        for effect in self.effect_dict.get(EffectType.MONSTER_DMG, []):
+        for effect in self.effect_dict.get(EffectType.MONSTER_DAMAGE, []):
             damage = effect.on_get_monster_damage(damage, state)
 
         return Effect.postprocess_value(state, damage)
@@ -188,7 +205,7 @@ class Dule:
 
             # only support one special turn now
             effect = special_turn[0]
-            new_dict = dispatch_effects(effect.effects)
+            new_dict = dispatch_effects(effect.effects[0])
             self.update_dynamic_effects(new_dict)
             merge_dict(self.effect_dict, new_dict)
             player_dmg = self.get_player_damage()
@@ -196,11 +213,14 @@ class Dule:
                 return 9999999999, 0
             turn = math.ceil(life / player_dmg) - 1
             if turn > effect.turn:
-
                 crt_dmg += self.get_monster_damage() * effect.turn
                 crt_dmg -= self.get_player_regenerate() * (effect.turn + 1)
                 life -= player_dmg * effect.turn
+
                 self.effect_dict = original_effect_dict
+                new_dict = dispatch_effects(effect.effects[1])
+                self.update_dynamic_effects(new_dict)
+                merge_dict(self.effect_dict, new_dict)
                 turn = math.ceil(life / self.get_player_damage()) - 1
                 crt_dmg += self.get_monster_damage() * turn
                 crt_dmg -= self.get_player_regenerate() * turn

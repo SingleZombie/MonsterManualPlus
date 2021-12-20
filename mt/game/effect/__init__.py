@@ -1,5 +1,6 @@
 from .armor import *  # noqa: F401,F403
 from .blood_hunter import *  # noqa: F401,F403
+from .critical_strike import *  # noqa: F401,F403
 from .effect import *  # noqa: F401,F403
 from .evasion import *  # noqa: F401,F403
 from .frost import *  # noqa: F401,F403
@@ -8,4 +9,5 @@ from .life_regenerate import *  # noqa: F401,F403
 from .monster_property import *  # noqa: F401,F403
 from .player_property import *  # noqa: F401,F403
 from .spl_atk import *  # noqa: F401,F403
+from .stone_skin import *  # noqa: F401,F403
 from .toxin import *  # noqa: F401,F403

@@ -17,11 +17,11 @@ class SpellAttack(Effect):
 class StopPhysicalDamage(Effect):
 
     def __init__(self):
-        super().__init__(EffectType.MONSTER_PHYSICAL_DMG)
+        super().__init__(EffectType.MONSTER_PHYSICAL_DAMAGE)
 
     def on_get_monster_physical_damage(self, damage, states={}) -> int:
         states['zero'] = True
-        return super().on_get_monster_attack(damage, states)
+        return super().on_get_monster_physical_damage(damage, states)
 
 
 @register_effect('spl')
@@ -30,4 +30,4 @@ class Spell(Effect):
     def __init__(self, turn: int, value: int):
         super().__init__(EffectType.SPECIAL_TURN)
         self.turn = turn
-        self.effects = [SpellAttack(value), StopPhysicalDamage()]
+        self.effects = [[SpellAttack(value), StopPhysicalDamage()], []]

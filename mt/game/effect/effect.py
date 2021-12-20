@@ -12,14 +12,15 @@ class EffectType(enum.Enum):
     PLAYER_DEFENCE = enum.auto()
     PLAYER_SPELL_DEFENCE = enum.auto()
     PLAYER_SPEED = enum.auto()
+    PLAYER_PHYSICAL_DAMAGE = enum.auto()
     PLAYER_DAMAGE = enum.auto()
     PLAYER_REGENERATE = enum.auto()
     MONSTER_LIFE = enum.auto()
     MONSTER_ATTACK = enum.auto()
     MONSTER_DEFENCE = enum.auto()
     MONSTER_SPEED = enum.auto()
-    MONSTER_PHYSICAL_DMG = enum.auto()
-    MONSTER_DMG = enum.auto()
+    MONSTER_PHYSICAL_DAMAGE = enum.auto()
+    MONSTER_DAMAGE = enum.auto()
     SPECIAL_TURN = enum.auto()
     FROM_FIRST_TURN = enum.auto()
 
@@ -34,6 +35,12 @@ def update_state_mult_mod(state: Dict[str, float], multiplier: float):
     v = state.get('mult_mod', 0)
     v += multiplier
     state['mult_mod'] = v
+
+
+def update_state_post_mod(state: Dict[str, float], mod: float):
+    v = state.get('post_mod', 0)
+    v += mod
+    state['post_mod'] = v
 
 
 class Effect():
@@ -53,7 +60,7 @@ class Effect():
         mult = states.get('mult', 1)
         mult_mod = states.get('mult_mod', 0)
         mult += mult_mod
-        return value * mult
+        return value * mult + states.get('post_mod', 0)
 
     def on_get_player_attack(self, attack, states={}) -> int:
         return self.mod_value(states, attack)
@@ -70,7 +77,7 @@ class Effect():
     def on_get_player_damage(self, damage, states: dict = {}) -> float:
         if states.get('evasion', None):
             evasion = states['evasion']
-            damage = damage * evasion / 100.0
+            damage = damage * (1 - evasion / 100.0)
             states.pop('evasion')
         return self.mod_value(states, damage)
 
@@ -169,24 +176,28 @@ def dispatch_effects(effects: Sequence[Effect],
     return res
 
 
-effect_list = {}
+__effect_list = {}
 
 
 def register_effect(name: str):
 
     def decorator(effect_cls: type):
-        effect_list[name] = effect_cls
+        __effect_list[name] = effect_cls
         return effect_cls
 
     return decorator
 
 
 def build_effect(name, *args, **kwargs):
-    return effect_list[name](*args, **kwargs)
+    return __effect_list[name](*args, **kwargs)
 
 
-extra_inputs = set()
+__extra_inputs = {}
 
 
-def require_extra_input(name: str):
-    extra_inputs.add(name)
+def require_extra_input(name: str, default=0):
+    __extra_inputs[name] = default
+
+
+def get_extra_inputs() -> Dict[str, int]:
+    return __extra_inputs

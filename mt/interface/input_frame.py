@@ -1,16 +1,17 @@
 import tkinter as tk
 
 from mt.game import Player
-from mt.game.effect import extra_inputs
+from mt.game.effect import get_extra_inputs as load_extra_inputs
 from mt.game.equipment import build_equipment
 
 player_inputs = ['Attack', 'Defence', 'HP', 'MAX HP', 'Level']
-default_states = ['5', '4', '175', '350', '2']
+default_states = ['20', '19', '602', '1110', '4']
 default_equipments = [
-    'cloth', 'sword', 'knight_bracer', 'skeleton_shield', 'speed_fist'
+    'cloth', 'sword', 'knight_bracer', 'skeleton_shield', 'speed_fist',
+    't_o_s', 'buckler'
 ]
-# default_equi_comb = '[(1, 2), (1, 1), (0, 2), (3, 3)]'
-default_equi_comb = '[(3, 3)]'
+default_equi_comb = '[(0, 2), (1, 2), (1, 1), (3, 3)]'
+# default_equi_comb = '[(3, 3)]'
 
 
 class InputFrame(tk.Frame):
@@ -22,22 +23,23 @@ class InputFrame(tk.Frame):
         self.player_items = []
         for i, name in enumerate(player_inputs):
             descriptor = tk.Label(self.left_grid, text=f'{name}:')
-            entry = tk.Entry(self.left_grid)
+            entry = tk.Entry(self.left_grid, width=5)
             self.player_items.append((descriptor, entry))
             entry.insert(0, default_states[i])
 
         self.extra_input_items = []
-        for name in extra_inputs:
+        for name, default_value in load_extra_inputs().items():
             descriptor = tk.Label(self.left_grid, text=f'{name}:')
-            entry = tk.Entry(self.left_grid)
+            entry = tk.Entry(self.left_grid, width=5)
             self.extra_input_items.append((descriptor, entry))
+            entry.insert(0, str(default_value))
 
         self.equipment_descriptor = tk.Label(
             self.left_grid, text='Equipments:')
-        self.equipments_entry = tk.Entry(self.left_grid, width=40)
+        self.equipments_entry = tk.Entry(self.left_grid, width=20)
         self.equipment_comb_descriptor = tk.Label(
             self.left_grid, text='Equipment Combination:')
-        self.equipments_comb_entry = tk.Entry(self.left_grid, width=40)
+        self.equipments_comb_entry = tk.Entry(self.left_grid, width=20)
         self.equipments_entry.insert(0, ','.join(default_equipments))
         self.equipments_comb_entry.insert(0, default_equi_comb)
 
@@ -62,7 +64,7 @@ class InputFrame(tk.Frame):
 
     def get_extra_inputs(self):
         res = {}
-        for i, name in enumerate(extra_inputs):
+        for i, name in enumerate(load_extra_inputs()):
             res[name] = int(self.extra_input_items[i][1].get())
 
         return res

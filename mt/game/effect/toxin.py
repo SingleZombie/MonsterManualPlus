@@ -5,7 +5,7 @@ from .effect import Effect, EffectType, register_effect
 class Toxin(Effect):
 
     def __init__(self, value: int):
-        super().__init__(EffectType.MONSTER_PHYSICAL_DMG)
+        super().__init__(EffectType.MONSTER_PHYSICAL_DAMAGE)
         self.value = value
 
     def on_get_monster_physical_damage(self, damage, states={}):

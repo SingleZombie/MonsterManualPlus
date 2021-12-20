@@ -3,7 +3,19 @@ from tkinter.constants import LEFT
 from typing import Dict
 
 from ..game import Dule, Player
-from ..game.database import display_monster, monster_dict
+from ..game.database import get_monsters
+
+display_monster = [
+    'slime', 'will_o_the_wisp', 'ooze', 'slime_warrior', 'red_slime',
+    'red_slime_warrior', 'dead', 'blood_dead', 'ice_ooze', 'rogue_mage',
+    'slime_man', 'slime_noble', 'black_slime', 'toxic_dead', 'swordman',
+    'bird', 'bowman', 'goblin', 'red_slime_noble', 'bat',
+    'black_slime_warrior', 'demon_seed', 'fire_of_soul', 'metero_rogue_mage',
+    'big_bat', 'tomb_watcher', 'tomb_swordman', 'tomb_general',
+    'nightmare_soldier', 'nightmare_mage', 'nightmare_shieldman'
+]
+
+# display_monster = ['toxic_dead']
 
 
 class DisplayFrame(tk.Frame):
@@ -32,6 +44,8 @@ class DisplayFrame(tk.Frame):
                                         width=2000,
                                         window=self.sub_frame,
                                         anchor='nw')
+
+        self.__monster_list = get_monsters(display_monster)
 
         def _configure_interior(event):
             # update the scrollbars to match the size of the inner frame
@@ -66,8 +80,7 @@ class DisplayFrame(tk.Frame):
         for child in self.sub_frame.winfo_children():
             child.destroy()
 
-        for i, monster_name in enumerate(display_monster):
-            monster = monster_dict[monster_name]
+        for i, monster in enumerate(self.__monster_list):
 
             dule = Dule(monster, player)
             dmg, turn, equip_id = dule.cal_opt_res(extra_inputs=extra_input)
@@ -79,21 +92,20 @@ class DisplayFrame(tk.Frame):
                 1, 1, extra_inputs=extra_input)
             dmg_atk_def_2, _, _ = dule.cal_opt_res(
                 2, 2, extra_inputs=extra_input)
-
+            dmg_atk_def_3, _, _ = dule.cal_opt_res(
+                3, 3, extra_inputs=extra_input)
+            note_str = ''
+            monster_name = display_monster[i]
             texts = [
-                monster_name,
-                f'dmg: {dmg}',
-                f'turn: {turn}',
-                f'equip: {equip_id}',
-                f'a+1: {dmg_atk_1 - dmg}',
-                f'd+1: {dmg_def_1 - dmg}',
-                f'a/d+1: {dmg_atk_def_1 - dmg}',
-                f'a+2: {dmg_atk_2 - dmg}',
-                f'd+2: {dmg_def_2 - dmg}',
+                monster_name, f'dmg: {dmg}', f'turn: {turn}',
+                f'equip: {equip_id + 1}', f'a+1: {dmg_atk_1 - dmg}',
+                f'd+1: {dmg_def_1 - dmg}', f'a/d+1: {dmg_atk_def_1 - dmg}',
+                f'a+2: {dmg_atk_2 - dmg}', f'd+2: {dmg_def_2 - dmg}',
                 f'a/d+2: {dmg_atk_def_2 - dmg}',
+                f'a/d+3: {dmg_atk_def_3 - dmg}', f'note: {note_str}'
             ]
 
             for j, text in enumerate(texts):
                 tk.Label(
-                    self.sub_frame, text=text).grid(
+                    self.sub_frame, text=text, font=('Arial', 12)).grid(
                         row=i, column=j, padx=5)

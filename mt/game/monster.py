@@ -1,6 +1,9 @@
 import enum
 
+from mt.game.effect.effect import DynamicEffectWithTest
+
 from .character import Character
+from .effect import VaringEffect
 
 
 class MonsterRace(enum.Enum):
@@ -24,3 +27,16 @@ class Monster(Character):
         self.race = race
         self._gold = gold
         self._experience = experience
+
+        self._test_effects = []
+        for effect in self._effects:
+            if isinstance(effect, (VaringEffect, DynamicEffectWithTest)):
+                self._test_effects.append(effect)
+
+    @property
+    def has_test(self):
+        return len(self._test_effects) > 0
+
+    @property
+    def test_effects(self):
+        return self._test_effects

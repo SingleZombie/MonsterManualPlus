@@ -1,3 +1,4 @@
+from .buckler import *  # noqa: F401,F403
 from .cloth import *  # noqa: F401,F403
 from .equipment import *  # noqa: F401,F403
 from .knight_bracer import *  # noqa: F401,F403

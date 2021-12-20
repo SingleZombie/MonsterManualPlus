@@ -5,7 +5,7 @@ from mt.interface import DisplayFrame, InputFrame
 
 def main():
     root = tk.Tk()
-    root.geometry('1366x768')
+    root.geometry('1680x768')
 
     input_frame = InputFrame(root)
     display_frame = DisplayFrame(root)
