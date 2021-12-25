@@ -168,7 +168,7 @@ class Dule:
         if EffectType.VARING in effect_dict:
             effect_dict.pop(EffectType.VARING)
 
-    def cal_res(self, crt_effects, extra_inputs={}) -> Tuple[int, int]:
+    def cal_res(self, crt_effects, extra_inputs) -> Tuple[int, int]:
         self.effect_dict = dispatch_effects(crt_effects)
         self.update_dynamic_effects(self.effect_dict)
         self.update_varing_effects(self.effect_dict, extra_inputs)
@@ -241,7 +241,8 @@ class Dule:
         crt_dmg = math_util.floor(crt_dmg)
         return crt_dmg, crt_turn
 
-    def cal_all_res(self, test_effect: type) -> Dict[str, Tuple[int, int]]:
+    def cal_test_res(self, test_effect: type,
+                     extra_inputs: Dict) -> Dict[str, Tuple[int, int]]:
 
         combs = self.player.get_equipment_comb()
         res = {}
@@ -263,7 +264,7 @@ class Dule:
                         extra_effects = effect_dict[key]
                         crt_effects.extend(extra_effects)
 
-                    crt_dmg, _ = self.cal_res(crt_effects)
+                    crt_dmg, _ = self.cal_res(crt_effects, extra_inputs)
 
                     if key not in res or res[key][0] > crt_dmg:
                         res[key] = (crt_dmg, id)

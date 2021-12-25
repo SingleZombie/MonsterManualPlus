@@ -45,8 +45,8 @@ def update_state_post_mod(state: Dict[str, float], mod: float):
 
 class Effect():
 
-    def __init__(self, type: Union[EffectType, List[EffectType]]):
-        self.type = type
+    def __init__(self, _type: Union[EffectType, List[EffectType]]):
+        self._type = _type
 
     @staticmethod
     def mod_value(states: dict, value):
@@ -163,15 +163,15 @@ def dispatch_effects(effects: Sequence[Effect],
         res = output
 
     for effect in effects:
-        if not isinstance(effect.type, list):
-            effect_type_list = [effect.type]
+        if not isinstance(effect._type, list):
+            effect_type_list = [effect._type]
         else:
-            effect_type_list = effect.type
+            effect_type_list = effect._type
 
-        for type in effect_type_list:
-            if type not in res:
-                res[type] = []
-            res[type].append(effect)
+        for a_type in effect_type_list:
+            if a_type not in res:
+                res[a_type] = []
+            res[a_type].append(effect)
 
     return res
 

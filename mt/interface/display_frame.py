@@ -5,18 +5,6 @@ from typing import Dict
 from ..game import Dule, Player
 from ..game.database import get_monsters
 
-display_monster = [
-    'slime', 'will_o_the_wisp', 'ooze', 'slime_warrior', 'red_slime',
-    'red_slime_warrior', 'dead', 'blood_dead', 'ice_ooze', 'rogue_mage',
-    'slime_man', 'slime_noble', 'black_slime', 'toxic_dead', 'swordman',
-    'bird', 'bowman', 'goblin', 'red_slime_noble', 'bat',
-    'black_slime_warrior', 'demon_seed', 'fire_of_soul', 'metero_rogue_mage',
-    'big_bat', 'tomb_watcher', 'tomb_swordman', 'tomb_general',
-    'nightmare_soldier', 'nightmare_mage', 'nightmare_shieldman'
-]
-
-# display_monster = ['toxic_dead']
-
 
 class DisplayFrame(tk.Frame):
 
@@ -41,11 +29,8 @@ class DisplayFrame(tk.Frame):
 
         self.sub_frame = tk.Frame(self.display_area)
         self.display_area.create_window((0, 0),
-                                        width=2000,
                                         window=self.sub_frame,
                                         anchor='nw')
-
-        self.__monster_list = get_monsters(display_monster)
 
         def _configure_interior(event):
             # update the scrollbars to match the size of the inner frame
@@ -80,7 +65,9 @@ class DisplayFrame(tk.Frame):
         for child in self.sub_frame.winfo_children():
             child.destroy()
 
-        for i, monster in enumerate(self.__monster_list):
+        monster_names, monster_list = get_monsters()
+
+        for i, monster in enumerate(monster_list):
 
             dule = Dule(monster, player)
             dmg, turn, equip_id = dule.cal_opt_res(extra_inputs=extra_input)
@@ -94,8 +81,16 @@ class DisplayFrame(tk.Frame):
                 2, 2, extra_inputs=extra_input)
             dmg_atk_def_3, _, _ = dule.cal_opt_res(
                 3, 3, extra_inputs=extra_input)
+
             note_str = ''
-            monster_name = display_monster[i]
+            if monster.has_test:
+                test_effects = monster.test_effects
+                for effect in test_effects:
+                    res = dule.cal_test_res(
+                        type(effect), extra_inputs=extra_input)
+                    for key, value in res.items():
+                        note_str += f'{key}:{value} '
+            monster_name = monster_names[i]
             texts = [
                 monster_name, f'dmg: {dmg}', f'turn: {turn}',
                 f'equip: {equip_id + 1}', f'a+1: {dmg_atk_1 - dmg}',
@@ -108,4 +103,4 @@ class DisplayFrame(tk.Frame):
             for j, text in enumerate(texts):
                 tk.Label(
                     self.sub_frame, text=text, font=('Arial', 12)).grid(
-                        row=i, column=j, padx=5)
+                        row=i, column=j, padx=5, sticky='w')

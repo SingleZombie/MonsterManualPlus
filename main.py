@@ -5,7 +5,7 @@ from mt.interface import DisplayFrame, InputFrame
 
 def main():
     root = tk.Tk()
-    root.geometry('1680x768')
+    root.geometry('1024x768')
 
     input_frame = InputFrame(root)
     display_frame = DisplayFrame(root)
@@ -21,6 +21,11 @@ def main():
     display_frame.show_children()
     display_frame.pack(side=tk.TOP, fill=tk.BOTH, padx=20, pady=20)
 
+    def destory_func():
+        input_frame.save_inputs()
+        root.destroy()
+
+    root.protocol('WM_DELETE_WINDOW', destory_func)
     root.mainloop()
 
 

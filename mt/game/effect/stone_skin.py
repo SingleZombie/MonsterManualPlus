@@ -1,5 +1,5 @@
-from .effect import (Effect, EffectType, register_effect,
-                     update_state_post_mod, update_state_mult)
+from .effect import (Effect, EffectType, register_effect, update_state_mult,
+                     update_state_post_mod)
 
 
 @register_effect('stone_skin')

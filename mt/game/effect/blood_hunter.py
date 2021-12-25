@@ -34,7 +34,12 @@ class BloodHunter(DynamicEffectWithTest):
 
     def to_test_static_effects(self) -> Dict[str, List[Effect]]:
         res = {}
-        for i in range(10):
-            percentage = (i + 1) * 10
-            new_list = [copy(x).mult(percentage) for x in self.effects]
-            res[f'{percentage}%:'] = new_list
+        for i in range(5):
+            percentage = (i + 1) * 20
+            new_list = []
+            for effect in self.effects:
+                new_effect = copy(effect)
+                new_effect.mult(percentage)
+                new_list.append(new_effect)
+            res[f'{percentage}%'] = new_list
+        return res

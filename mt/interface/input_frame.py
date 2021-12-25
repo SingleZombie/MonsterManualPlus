@@ -1,31 +1,30 @@
+import json
 import tkinter as tk
 
 from mt.game import Player
+from mt.game.database import build_monsters
 from mt.game.effect import get_extra_inputs as load_extra_inputs
 from mt.game.equipment import build_equipment
-
-player_inputs = ['Attack', 'Defence', 'HP', 'MAX HP', 'Level']
-default_states = ['20', '19', '602', '1110', '4']
-default_equipments = [
-    'cloth', 'sword', 'knight_bracer', 'skeleton_shield', 'speed_fist',
-    't_o_s', 'buckler'
-]
-default_equi_comb = '[(0, 2), (1, 2), (1, 1), (3, 3)]'
-# default_equi_comb = '[(3, 3)]'
 
 
 class InputFrame(tk.Frame):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, input_cfg='config/default.json', **kwargs):
         super().__init__(*args, **kwargs)
+        self.config_path = input_cfg
+        with open(input_cfg, 'r') as fp:
+            config_dict = json.load(fp)
+        self.output_cfg = config_dict
+        build_monsters(config_dict['display_monster'])
+
         self.left_grid = tk.Frame(self)
 
         self.player_items = []
-        for i, name in enumerate(player_inputs):
+        for i, name in enumerate(config_dict['player_inputs']):
             descriptor = tk.Label(self.left_grid, text=f'{name}:')
             entry = tk.Entry(self.left_grid, width=5)
             self.player_items.append((descriptor, entry))
-            entry.insert(0, default_states[i])
+            entry.insert(0, config_dict['states'][i])
 
         self.extra_input_items = []
         for name, default_value in load_extra_inputs().items():
@@ -40,11 +39,20 @@ class InputFrame(tk.Frame):
         self.equipment_comb_descriptor = tk.Label(
             self.left_grid, text='Equipment Combination:')
         self.equipments_comb_entry = tk.Entry(self.left_grid, width=20)
-        self.equipments_entry.insert(0, ','.join(default_equipments))
-        self.equipments_comb_entry.insert(0, default_equi_comb)
+        self.equipments_entry.insert(0, ','.join(config_dict['equipments']))
+        self.equipments_comb_entry.insert(0, config_dict['equi_comb'])
 
         self.right_frame = tk.Frame(self)
         self.enter_button = tk.Button(self.right_frame, text='Enter')
+
+    def save_inputs(self):
+        self.output_cfg['states'] = []
+        for input in self.player_items:
+            self.output_cfg['states'].append(input[1].get())
+        self.output_cfg['equi_comb'] = self.equipments_comb_entry.get()
+        self.output_cfg['equipments'] = self.equipments_entry.get().split(',')
+        with open(self.config_path, 'w') as fp:
+            json.dump(self.output_cfg, fp)
 
     def get_player(self):
         equi_names = self.equipments_entry.get().split(',')

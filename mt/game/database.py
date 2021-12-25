@@ -1,14 +1,10 @@
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
+from .effect import build_effect
 from .monster import Monster, MonsterRace
 
-
-def build_effect(name: str, *arg, **kwargs):
-    return (name, arg, kwargs)
-
-
 __monster_dict: Dict[str, Dict] = dict(
-    slime=dict(
+    slime=lambda: Monster(
         life=32,
         attack=3,
         defence=0,
@@ -16,7 +12,7 @@ __monster_dict: Dict[str, Dict] = dict(
         gold=1,
         experience=1,
         effects=[]),
-    will_o_the_wisp=dict(
+    will_o_the_wisp=lambda: Monster(
         life=25,
         attack=6,
         defence=0,
@@ -24,7 +20,7 @@ __monster_dict: Dict[str, Dict] = dict(
         effects=[build_effect('frost', 40)],
         gold=1,
         experience=2),
-    ooze=dict(
+    ooze=lambda: Monster(
         life=80,
         attack=2,
         defence=0,
@@ -32,7 +28,7 @@ __monster_dict: Dict[str, Dict] = dict(
         effects=[build_effect('toxin', 1)],
         gold=1,
         experience=2),
-    slime_warrior=dict(
+    slime_warrior=lambda: Monster(
         life=42,
         attack=5,
         defence=1,
@@ -40,7 +36,7 @@ __monster_dict: Dict[str, Dict] = dict(
         effects=[],
         gold=1,
         experience=2),
-    red_slime=dict(
+    red_slime=lambda: Monster(
         life=58,
         attack=7,
         defence=1,
@@ -48,7 +44,7 @@ __monster_dict: Dict[str, Dict] = dict(
         effects=[],
         gold=1,
         experience=3),
-    red_slime_warrior=dict(
+    red_slime_warrior=lambda: Monster(
         life=80,
         attack=11,
         defence=3,
@@ -56,7 +52,7 @@ __monster_dict: Dict[str, Dict] = dict(
         effects=[],
         gold=2,
         experience=4),
-    dead=dict(
+    dead=lambda: Monster(
         life=45,
         attack=15,
         defence=0,
@@ -69,7 +65,7 @@ __monster_dict: Dict[str, Dict] = dict(
                 'monster_group_pro', MonsterRace.SKELETON, life_mult_mod=10)
         ],
         race=MonsterRace.SKELETON),
-    blood_dead=dict(
+    blood_dead=lambda: Monster(
         life=75,
         attack=18,
         defence=1,
@@ -85,7 +81,7 @@ __monster_dict: Dict[str, Dict] = dict(
                 monster_property=build_effect('monster_pro', speed_mod=2))
         ],
         race=MonsterRace.SKELETON),
-    ice_ooze=dict(
+    ice_ooze=lambda: Monster(
         life=300,
         attack=2,
         defence=0,
@@ -95,7 +91,7 @@ __monster_dict: Dict[str, Dict] = dict(
         level=2,
         effects=[build_effect('frost', 60),
                  build_effect('toxin', 2)]),
-    rogue_mage=dict(
+    rogue_mage=lambda: Monster(
         life=96,
         attack=12,
         defence=4,
@@ -104,7 +100,7 @@ __monster_dict: Dict[str, Dict] = dict(
         experience=6,
         level=2,
         effects=[build_effect('spl', 3, 30)]),
-    slime_man=dict(
+    slime_man=lambda: Monster(
         life=122,
         attack=11,
         defence=2,
@@ -113,7 +109,7 @@ __monster_dict: Dict[str, Dict] = dict(
         experience=6,
         level=2,
         effects=[build_effect('evasion', 50)]),
-    slime_noble=dict(
+    slime_noble=lambda: Monster(
         life=101,
         attack=13,
         defence=3,
@@ -122,7 +118,7 @@ __monster_dict: Dict[str, Dict] = dict(
         experience=5,
         level=3,
         effects=[build_effect('level_pr', 25)]),
-    toxic_dead=dict(
+    toxic_dead=lambda: Monster(
         life=115,
         attack=27,
         defence=5,
@@ -136,7 +132,7 @@ __monster_dict: Dict[str, Dict] = dict(
             build_effect('toxin', 3)
         ],
         race=MonsterRace.SKELETON),
-    black_slime=dict(
+    black_slime=lambda: Monster(
         life=157,
         attack=19,
         defence=8,
@@ -145,7 +141,7 @@ __monster_dict: Dict[str, Dict] = dict(
         experience=7,
         level=3,
         effects=[]),
-    swordman=dict(
+    swordman=lambda: Monster(
         life=135,
         attack=22,
         defence=6,
@@ -154,7 +150,7 @@ __monster_dict: Dict[str, Dict] = dict(
         experience=8,
         level=3,
         effects=[]),
-    bowman=dict(
+    bowman=lambda: Monster(
         life=160,
         attack=28,
         defence=8,
@@ -163,7 +159,7 @@ __monster_dict: Dict[str, Dict] = dict(
         experience=12,
         level=4,
         effects=[]),
-    bird=dict(
+    bird=lambda: Monster(
         life=184,
         attack=23,
         defence=5,
@@ -172,7 +168,7 @@ __monster_dict: Dict[str, Dict] = dict(
         experience=8,
         level=3,
         effects=[build_effect('evasion', 25)]),
-    goblin=dict(
+    goblin=lambda: Monster(
         life=245,
         attack=26,
         defence=12,
@@ -181,7 +177,7 @@ __monster_dict: Dict[str, Dict] = dict(
         experience=13,
         level=4,
         effects=[]),
-    red_slime_noble=dict(
+    red_slime_noble=lambda: Monster(
         life=178,
         attack=20,
         defence=11,
@@ -190,7 +186,7 @@ __monster_dict: Dict[str, Dict] = dict(
         experience=8,
         level=4,
         effects=[build_effect('level_pr', 25)]),
-    bat=dict(
+    bat=lambda: Monster(
         life=138,
         attack=35,
         defence=8,
@@ -199,7 +195,7 @@ __monster_dict: Dict[str, Dict] = dict(
         experience=14,
         level=4,
         effects=[build_effect('evasion', 35)]),
-    black_slime_warrior=dict(
+    black_slime_warrior=lambda: Monster(
         life=288,
         attack=28,
         defence=15,
@@ -208,7 +204,7 @@ __monster_dict: Dict[str, Dict] = dict(
         experience=15,
         level=4,
         effects=[]),
-    demon_seed=dict(
+    demon_seed=lambda: Monster(
         life=275,
         attack=29,
         defence=17,
@@ -221,7 +217,7 @@ __monster_dict: Dict[str, Dict] = dict(
                 'blood_hunter',
                 monster_property=build_effect('monster_pro', speed_mod=3))
         ]),
-    metero_rogue_mage=dict(
+    metero_rogue_mage=lambda: Monster(
         life=310,
         attack=33,
         defence=14,
@@ -230,7 +226,7 @@ __monster_dict: Dict[str, Dict] = dict(
         experience=18,
         level=4,
         effects=[build_effect('spl', 7, 60)]),
-    tomb_watcher=dict(
+    tomb_watcher=lambda: Monster(
         life=187,
         attack=40,
         defence=20,
@@ -243,7 +239,7 @@ __monster_dict: Dict[str, Dict] = dict(
                 'monster_group_pro', MonsterRace.SKELETON, life_mult_mod=20)
         ],
         race=MonsterRace.SKELETON),
-    fire_of_soul=dict(
+    fire_of_soul=lambda: Monster(
         life=107,
         attack=45,
         defence=15,
@@ -252,7 +248,7 @@ __monster_dict: Dict[str, Dict] = dict(
         experience=17,
         level=4,
         effects=[build_effect('frost', 160)]),
-    tomb_general=dict(
+    tomb_general=lambda: Monster(
         life=270,
         attack=50,
         defence=25,
@@ -266,7 +262,7 @@ __monster_dict: Dict[str, Dict] = dict(
             build_effect('level_pr', 20)
         ],
         race=MonsterRace.SKELETON),
-    tomb_swordman=dict(
+    tomb_swordman=lambda: Monster(
         life=210,
         attack=52,
         defence=16,
@@ -280,7 +276,7 @@ __monster_dict: Dict[str, Dict] = dict(
             build_effect('crt_stk', 20, 250)
         ],
         race=MonsterRace.SKELETON),
-    big_bat=dict(
+    big_bat=lambda: Monster(
         life=232,
         attack=40,
         defence=23,
@@ -291,7 +287,7 @@ __monster_dict: Dict[str, Dict] = dict(
         effects=[
             build_effect('evasion', 30),
         ]),
-    nightmare_soldier=dict(
+    nightmare_soldier=lambda: Monster(
         life=268,
         attack=45,
         defence=27,
@@ -300,7 +296,7 @@ __monster_dict: Dict[str, Dict] = dict(
         experience=24,
         level=5,
         effects=[]),
-    nightmare_mage=dict(
+    nightmare_mage=lambda: Monster(
         life=373,
         attack=42,
         defence=24,
@@ -309,7 +305,7 @@ __monster_dict: Dict[str, Dict] = dict(
         experience=26,
         level=5,
         effects=[build_effect('spl', 3, 120)]),
-    nightmare_shieldman=dict(
+    nightmare_shieldman=lambda: Monster(
         life=550,
         attack=40,
         defence=28,
@@ -320,15 +316,18 @@ __monster_dict: Dict[str, Dict] = dict(
         effects=[build_effect('stone_skin', 25, 3)]),
 )
 
+__monster_instances = []
+__monster_names = []
 
-def get_monsters(monster_name_list: List[str]) -> List[Monster]:
-    from .effect import build_effect as build_effect_instance
-    res = []
+
+def build_monsters(monster_name_list: List[str]) -> List[Monster]:
+    global __monster_names
+    __monster_names = monster_name_list
+
     for name in monster_name_list:
-        a_monster_dict = __monster_dict[name]
-        a_monster_dict['effects'] = [
-            build_effect_instance(name, *args, **kwargs)
-            for name, args, kwargs in a_monster_dict['effects']
-        ]
-        res.append(Monster(**a_monster_dict))
-    return res
+        __monster_instances.append(__monster_dict[name]())
+    return __monster_instances
+
+
+def get_monsters() -> Tuple[List[str], List[Monster]]:
+    return __monster_names, __monster_instances

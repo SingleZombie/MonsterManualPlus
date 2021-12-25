@@ -1,4 +1,3 @@
-from copy import copy
 from typing import Dict, List
 
 from .effect import (Effect, EffectType, VaringEffect, register_effect,
@@ -100,6 +99,10 @@ class MonsterGroupProperty(VaringEffect):
     def to_test_static_effects(self) -> Dict[str, List[Effect]]:
         res = {}
         for cnt in range(10):
-            new_effect = copy(self.effect)
+            new_effect = MonsterProperty(self.life_mult_mod, self.attack_mod,
+                                         self.defence_mod, self.speed_mod,
+                                         self.attack_mult, self.defence_mult,
+                                         self.speed_mult)
             new_effect.mult(cnt)
-            res[f'({cnt}):'] = [new_effect]
+            res[f'cnt({cnt})'] = [new_effect]
+        return res
