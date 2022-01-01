@@ -1,0 +1,20 @@
+{
+    "player_inputs": [
+        "Attack",
+        "Defence",
+        "HP",
+        "Energy Shield"
+    ],
+    "states": [
+        "215",
+        "175",
+        "200",
+        "128"
+    ],
+    "equipments": [
+        ""
+    ],
+    "equi_comb": "",
+    "game_style": "simple",
+    "monster_set": "YuZhouTanSuo1"
+}

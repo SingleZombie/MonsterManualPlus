@@ -134,11 +134,5 @@ dmypy.json
 # work_dirs
 work_dirs/
 
-# note
-note/
-
-# data and checkpoints for deep learning
-data/
-checkpoints/
-
-runs
+# private config
+my_config

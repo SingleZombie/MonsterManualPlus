@@ -1,0 +1,4 @@
+GLOBAL_CONFIG_FOLDER = './my_config/'
+DEFAULT_CONFIG_PATH = GLOBAL_CONFIG_FOLDER + 'default_config.json'
+INPUT_CONFIG_PATH = GLOBAL_CONFIG_FOLDER + 'input_config.json'
+DISPLAY_CONFIG_PATH = GLOBAL_CONFIG_FOLDER + 'display_config.json'
