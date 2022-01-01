@@ -24,6 +24,15 @@ class ComplexDule(Dule):
     def __init__(self, monster: Monster, player: Player):
         super().__init__(monster, player)
 
+    def get_player_spell_defence(self):
+        spell_defence = 0
+        state = {}
+        for effect in self.effect_dict.get(EffectType.PLAYER_SPELL_DEFENCE,
+                                           []):
+            spell_defence = effect.on_get_player_spell_defence(
+                spell_defence, state)
+        return Effect.postprocess_value(state, spell_defence)
+
     def get_player_physical_damage(self, physical_damage):
         state = {}
         for effect in self.effect_dict.get(EffectType.PLAYER_PHYSICAL_DAMAGE,
@@ -208,7 +217,8 @@ class ComplexDule(Dule):
 
                     crt_dmg, _ = self.cal_res(crt_effects, extra_inputs)
 
-                    if key not in res or res[key][0] > crt_dmg:
+                    if key not in res or res[key][0] is None or (
+                            crt_dmg is not None and res[key][0] > crt_dmg):
                         res[key] = (crt_dmg, id)
 
         return res

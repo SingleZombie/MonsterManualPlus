@@ -1,3 +1,4 @@
+import math
 from copy import copy
 from typing import Dict, List
 
@@ -21,8 +22,8 @@ class BloodHunter(DynamicEffectWithTest):
 
     def to_static_effects(self, player, monster) -> List[Effect]:
         if player.life < player.life_max:
-            multiplier = (player.life_max -
-                          player.life) / player.life_max * 100
+            multiplier = math.floor(
+                (player.life_max - player.life) / player.life_max * 100)
             res = []
             for effect in self.effects:
                 new_effect = copy(effect)

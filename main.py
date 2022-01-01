@@ -6,6 +6,7 @@ from tsmm.interface import DisplayFrame, InputFrame
 def main():
     root = tk.Tk()
     root.geometry('1024x768')
+    root.title('TotS Monster Manual')
 
     input_frame = InputFrame(
         root, input_cfg='config/simple_yuzhoutansuo2.json')
