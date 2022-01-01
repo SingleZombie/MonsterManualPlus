@@ -9,13 +9,13 @@ from tsmm.game.equipment import build_equipment
 
 class InputFrame(tk.Frame):
 
-    def __init__(self, *args, input_cfg='config/default.json', **kwargs):
+    def __init__(self, *args, input_cfg='', **kwargs):
         super().__init__(*args, **kwargs)
         self.config_path = input_cfg
         with open(input_cfg, 'r') as fp:
             config_dict = json.load(fp)
         self.output_cfg = config_dict
-        build_monsters(config_dict['display_monster'], self.get_monster_set())
+        build_monsters(self.get_monster_set())
 
         self.left_grid = tk.Frame(self)
 
@@ -45,7 +45,7 @@ class InputFrame(tk.Frame):
             self.equipments_comb_entry.insert(0, config_dict['equi_comb'])
 
         self.right_frame = tk.Frame(self)
-        self.enter_button = tk.Button(self.right_frame, text='Enter')
+        self.enter_button = tk.Button(self.right_frame, text='Refresh State')
 
     def get_game_style(self):
         return self.output_cfg['game_style']
