@@ -8,7 +8,7 @@ from .level_privilege import *  # noqa: F401,F403
 from .life_regenerate import *  # noqa: F401,F403
 from .monster_property import *  # noqa: F401,F403
 from .player_property import *  # noqa: F401,F403
+from .simple import *  # noqa: F401,F403
 from .spl_atk import *  # noqa: F401,F403
 from .stone_skin import *  # noqa: F401,F403
 from .toxin import *  # noqa: F401,F403
-from .simple import *  # noqa: F401,F403

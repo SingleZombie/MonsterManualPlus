@@ -1,7 +1,7 @@
 import enum
 from typing import Dict
 
-from mt.game.effect.effect import DynamicEffectWithTest
+from tsmm.game.effect.effect import DynamicEffectWithTest
 
 from ..character import Character
 from ..effect import VaringEffect

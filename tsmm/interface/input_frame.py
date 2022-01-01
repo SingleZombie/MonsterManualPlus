@@ -1,10 +1,10 @@
 import json
 import tkinter as tk
 
-from mt.game import Player
-from mt.game.database import build_monsters
-from mt.game.effect import get_extra_inputs as load_extra_inputs
-from mt.game.equipment import build_equipment
+from tsmm.game import Player
+from tsmm.game.database import build_monsters
+from tsmm.game.effect import get_extra_inputs as load_extra_inputs
+from tsmm.game.equipment import build_equipment
 
 
 class InputFrame(tk.Frame):

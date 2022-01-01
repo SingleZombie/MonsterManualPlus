@@ -2,8 +2,8 @@ import math
 from copy import deepcopy
 from typing import Dict, List, Tuple
 
-import mt.game.utils.math_util as math_util
-from mt.game.effect.effect import VaringEffect
+import tsmm.game.utils.math_util as math_util
+from tsmm.game.effect.effect import VaringEffect
 
 from ..effect import DynamicEffect, Effect, EffectType, dispatch_effects
 from ..monster.monster import Monster

@@ -1,7 +1,7 @@
 import tkinter as tk
 from typing import Dict
 
-from ..game import ComplexDule, SimpleDule, Player
+from ..game import ComplexDule, Player, SimpleDule
 from ..game.database import get_monsters
 
 
@@ -66,7 +66,7 @@ class DisplayFrame(tk.Frame):
                     dmg2 = 0
             if dmg1 is None or dmg2 is None:
                 if dmg2 is not None:
-                    return f"-{dmg2}"
+                    return f'-{dmg2}'
                 else:
                     return '???'
             else:

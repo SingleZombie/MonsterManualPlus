@@ -2,7 +2,7 @@ import enum
 from abc import ABCMeta, abstractmethod
 from typing import Dict, List, Sequence, Union
 
-from mt.game import Character
+from tsmm.game import Character
 
 
 class EffectType(enum.Enum):

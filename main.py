@@ -1,6 +1,6 @@
 import tkinter as tk
 
-from mt.interface import DisplayFrame, InputFrame
+from tsmm.interface import DisplayFrame, InputFrame
 
 
 def main():
