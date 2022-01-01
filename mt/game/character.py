@@ -1,6 +1,14 @@
 class Character:
 
-    def __init__(self, life, attack, defence, speed, effects, level=1):
+    def __init__(
+        self,
+        life,
+        attack,
+        defence,
+        speed,
+        effects,
+        level=1,
+    ):
         self._life = life
         self._attack = attack
         self._defence = defence

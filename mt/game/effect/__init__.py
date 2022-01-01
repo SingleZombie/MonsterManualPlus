@@ -11,3 +11,4 @@ from .player_property import *  # noqa: F401,F403
 from .spl_atk import *  # noqa: F401,F403
 from .stone_skin import *  # noqa: F401,F403
 from .toxin import *  # noqa: F401,F403
+from .simple import *  # noqa: F401,F403

@@ -7,13 +7,16 @@ def main():
     root = tk.Tk()
     root.geometry('1024x768')
 
-    input_frame = InputFrame(root)
+    input_frame = InputFrame(
+        root, input_cfg='config/simple_yuzhoutansuo2.json')
     display_frame = DisplayFrame(root)
+
+    game_style = input_frame.get_game_style()
 
     def cal_input(event):
         p = input_frame.get_player()
         e_i = input_frame.get_extra_inputs()
-        display_frame.update_content(p, e_i)
+        display_frame.update_content(p, game_style, e_i)
 
     input_frame.show_children()
     input_frame.add_enter_event(cal_input)

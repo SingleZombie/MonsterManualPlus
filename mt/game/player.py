@@ -7,11 +7,20 @@ from .equipment import Equipment
 
 class Player(Character):
 
-    def __init__(self, life, attack, defence, speed, effects,
-                 equipment_set_list: List[List[Equipment]], level, life_max):
+    def __init__(self,
+                 life,
+                 attack,
+                 defence,
+                 speed,
+                 effects,
+                 equipment_set_list: List[List[Equipment]],
+                 level,
+                 life_max,
+                 energy_shield=0):
         super().__init__(life, attack, defence, speed, effects, level)
         self.equipment_set_list = equipment_set_list
         self.life_max = life_max
+        self.energy_shield = energy_shield
 
     def get_equipment_comb(self) -> List[List[Effect]]:
         res = []

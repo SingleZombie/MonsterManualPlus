@@ -23,6 +23,7 @@ class EffectType(enum.Enum):
     MONSTER_DAMAGE = enum.auto()
     SPECIAL_TURN = enum.auto()
     FROM_FIRST_TURN = enum.auto()
+    FIRST_STRIKE = enum.auto()
 
 
 def update_state_mult(state: Dict[str, float], multiplier: float):
